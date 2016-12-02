@@ -8,11 +8,12 @@ if(args.src && args.target) {
   let item = args.src.replace(path.dirname(args.src) + '\/', '');
   handleDirectory(args.src, args.target, '', item);
   process.on('exit', function() {
-    if(checkFileExistence(args.target, 'Home.md')) {
+    if(checkFileExistence(args.target, 'Home.md') && args.rh) {
       fs.unlinkSync(path.resolve(args.target, 'Home.md'));
+      fs.renameSync(path.resolve(args.target, `${item}.md`), path.resolve(args.target, `Home.md`));
+    } else {
+      fs.unlinkSync(path.resolve(args.target, `${item}.md`);
     }
-
-    fs.renameSync(path.resolve(args.target, `${item}.md`), path.resolve(args.target, `Home.md`));
   });
 
 } else {
