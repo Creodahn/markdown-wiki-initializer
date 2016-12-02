@@ -2,16 +2,13 @@ const fs = require('graceful-fs'),
       mv = require('mv'),
       path = require ('path');
 
-const args = require('minimist')(process.argv.slice(2)),
-      srcDir = args.src,
-      log = console.log,
-      trgDir = args.target,
-      trgFile = args.out || 'parent.md';
-let currentDir = srcDir.replace(path.dirname(srcDir) + '\/', '');
+const args = require('minimist')(process.argv.slice(2));
 
-log(currentDir);
-handleDirectory(srcDir, trgDir, '', currentDir);
-// parseDirectory(srcDir, trgDir, currentDir, trgFile);
+if(args.src && args.target) {
+  handleDirectory(args.src, args.target, '', args.src.replace(path.dirname(args.src) + '\/', ''));
+} else {
+  console.error('Missing one or both of required arguments: --src and --target');
+}
 
 function handleDirectory(dir, targetDir, relPath, item) {
   makeDirectory(targetDir, item);
@@ -21,40 +18,39 @@ function handleDirectory(dir, targetDir, relPath, item) {
 
 function makeDirectory(loc, item) {
   fs.mkdir(path.resolve(loc, item), function(err) {
-    if(err) {
-      log(err);
-    }
+    if(err) console.error(err);
   });
 }
 
 function makeMarkdownFile(loc, item) {
-  fs.writeFile(path.resolve(loc, `${item}.md`), `# ${item}\n\n`, 'utf8', (err) => {
-    if(err) {
-      log(err);
-    }
+  fs.writeFile(path.resolve(loc, `${item}.md`), `# ${item}\n\n`, 'utf8', function(err) {
+    if(err) console.error(err);
   });
 }
 
 //read specified directory
 function parseDirectory(dir, targetDir, relPath, targetFile) {
-  fs.readdir(dir, (err, list) => {
+  fs.readdir(dir, function(err, list) {
     //for each item in directory, check if it's a directory
-    (list || []).forEach((item) => {
-      let isDir = fs.lstatSync(path.resolve(dir, item)).isDirectory(),
-          isHiddenFile = item.indexOf('.') === 0,
-          markdown = `* [${item}](${relPath}/${removeExtension(item)}.md)\n\n`;
+    (list || []).forEach(function(item) {
+      //determine if is directory or file
+      //skip node_modules and bower_components directories
+      let chk = fs.lstatSync(path.resolve(dir, item)),
+          disallowedDirs = ['node_modules', 'bower_components'],
+          isDir = chk.isDirectory() && disallowedDirs.indexOf(item.toLowerCase()) < 0,
+          //check if is file and is not a hidden file
+          isFile = chk.isFile() && item.indexOf('.') !== 0,
+          markdown = `*   [${item}](${relPath}/${removeExtension(item)}.md)\n\n`;
 
       switch(true) {
         case isDir:
           writeMarkdown(targetFile, markdown);
           handleDirectory(path.resolve(dir, item), targetDir, relPath, item);
           break;
-        case isHiddenFile:
-          //ignore the file
-          break;
-        default:
+        case isFile:
           makeMarkdownFile(targetDir, removeExtension(item));
           writeMarkdown(targetFile, markdown);
+          break;
       }
     });
   });
@@ -87,9 +83,7 @@ function reverse(str) {
 }
 
 function writeMarkdown(target, markdown) {
-  fs.appendFile(target, markdown, (err) => {
-    if(err) {
-      log(err);
-    }
+  fs.appendFile(target, markdown, function(err) {
+    if(err) console.error(err);
   });
 }
