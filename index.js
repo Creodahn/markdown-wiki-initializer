@@ -11,10 +11,10 @@ if(args.src && args.target) {
     switch(true) {
       case homeExists && args.rh:
         fs.unlinkSync(path.resolve(args.target, 'Home.md'));
-        fs.renameSync(path.resolve(args.target, `${item}.md`), path.resolve(args.target, `Home.md`));
+        fs.renameSync(path.resolve(args.target, `${item}.md`), path.resolve(args.target, 'Home.md'));
         break;
       case !homeExists:
-        fs.renameSync(path.resolve(args.target, `${item}.md`), path.resolve(args.target, `Home.md`));
+        fs.renameSync(path.resolve(args.target, `${item}.md`), path.resolve(args.target, 'Home.md'));
         break;
       default:
         fs.unlinkSync(path.resolve(args.target, `${item}.md`));
