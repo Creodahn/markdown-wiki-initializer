@@ -1,5 +1,4 @@
 const fs = require('graceful-fs'),
-      mv = require('mv'),
       path = require ('path');
 
 const args = require('minimist')(process.argv.slice(2));
