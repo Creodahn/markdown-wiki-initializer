@@ -11,21 +11,28 @@ if(args.src && args.target) {
 }
 
 function handleDirectory(dir, targetDir, relPath, item) {
+  let tFile = `${item}.md`;
+
   makeDirectory(targetDir, item);
   makeMarkdownFile(targetDir, item);
-  parseDirectory(dir, path.resolve(targetDir, item), path.resolve(relPath, item), path.resolve(targetDir, `${item}.md`));
+  writeMarkdown(tFile, `# ${item}\n\n`);
+  parseDirectory(dir, path.resolve(targetDir, item), path.join(relPath, item), path.resolve(targetDir, tFile));
 }
 
 function makeDirectory(loc, item) {
-  fs.mkdir(path.resolve(loc, item), function(err) {
-    if(err) console.error(err);
-  });
+  if(!checkFileExistence(loc, item)) {
+    fs.mkdir(path.resolve(loc, item), function(err) {
+      if(err) console.error(err);
+    });
+  }
 }
 
 function makeMarkdownFile(loc, item) {
-  fs.writeFile(path.resolve(loc, `${item}.md`), `# ${item}\n\n`, 'utf8', function(err) {
-    if(err) console.error(err);
-  });
+  if(!checkFileExistence(loc, item)) {
+    fs.writeFile(path.resolve(loc, `${item}.md`), `# ${item}\n\n`, 'utf8', function(err) {
+      if(err) console.error(err);
+    });
+  }
 }
 
 //read specified directory
