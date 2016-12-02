@@ -1,5 +1,8 @@
-const fs = require('graceful-fs'),
+const colors = require('colors'),
+      fs = require('graceful-fs'),
       path = require ('path');
+
+const log_error = require('console').error;
 
 const args = require('minimist')(process.argv.slice(2));
 
@@ -22,8 +25,13 @@ if(args.src && args.target) {
   });
 
 } else {
-  console.error('Missing one or both of required arguments: --src and --target');
+  error('Missing one or both of required arguments: --src and --target');
 }
+
+function error(err) {
+  log_error(colors.red(`\n${err.toString()}\n`));
+}
+
 function handleDirectory(dir, targetDir, relPath, item) {
   let tFile = path.resolve(targetDir, `${item}.md`);
 
@@ -36,7 +44,7 @@ function handleDirectory(dir, targetDir, relPath, item) {
 function makeDirectory(loc, item) {
   if(!checkFileExistence(loc, item)) {
     fs.mkdir(path.resolve(loc, item), function(err) {
-      if(err) console.error(err);
+      if(err) error(err);
     });
   }
 }
@@ -44,7 +52,7 @@ function makeDirectory(loc, item) {
 function makeMarkdownFile(loc, item) {
   if(!checkFileExistence(loc, item)) {
     fs.writeFile(path.resolve(loc, `${item}.md`), `# ${item}\n\n`, 'utf8', function(err) {
-      if(err) console.error(err);
+      if(err) error(err);
     });
   }
 }
@@ -108,6 +116,6 @@ function reverse(str) {
 
 function writeMarkdown(target, markdown) {
   fs.appendFile(target, markdown, function(err) {
-    if(err) console.error(err);
+    if(err) error(err);
   });
 }

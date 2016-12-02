@@ -3,6 +3,7 @@
   "version": "0.5.0",
   "description": "Create a structure for a Bitbucket mardown wiki",
   "dependencies": {
+    "colors": "^1.1.2",
     "graceful-fs": "^4.1.11",
     "minimist": "^1.2.0"
   }
