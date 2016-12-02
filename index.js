@@ -50,8 +50,10 @@ function makeDirectory(loc, item) {
 }
 
 function makeMarkdownFile(loc, item) {
-  if(!checkFileExistence(loc, item)) {
-    fs.writeFile(path.resolve(loc, `${item}.md`), `# ${item}\n\n`, 'utf8', function(err) {
+  let mdFile = `${item}.md`;
+
+  if(!checkFileExistence(loc, mdFile)) {
+    fs.writeFile(path.resolve(loc, mdFile), `# ${item}\n\n`, 'utf8', function(err) {
       if(err) error(err);
     });
   }
