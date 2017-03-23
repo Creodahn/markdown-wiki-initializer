@@ -7,10 +7,11 @@ const log_error = require('console').error;
 const args = require('minimist')(process.argv.slice(2));
 
 if(args.src && args.target) {
-  let item = args.src.replace(path.dirname(args.src) + '\/', '');
+  const item = args.src.replace(`${path.dirname(args.src)}/`, '');
   handleDirectory(args.src, args.target, '', item);
   process.on('exit', function() {
-    let homeExists = checkFileExistence(args.target, 'Home.md');
+    const homeExists = checkFileExistence(args.target, 'Home.md');
+
     switch(true) {
       case homeExists && args.rh:
         fs.unlinkSync(path.resolve(args.target, 'Home.md'));
@@ -33,7 +34,7 @@ function error(err) {
 }
 
 function handleDirectory(dir, targetDir, relPath, item) {
-  let tFile = path.resolve(targetDir, `${item}.md`);
+  const tFile = path.resolve(targetDir, `${item}.md`);
 
   makeDirectory(targetDir, item);
   makeMarkdownFile(targetDir, item);
@@ -50,7 +51,7 @@ function makeDirectory(loc, item) {
 }
 
 function makeMarkdownFile(loc, item) {
-  let mdFile = `${item}.md`;
+  const mdFile = `${item}.md`;
 
   if(!checkFileExistence(loc, mdFile)) {
     fs.writeFile(path.resolve(loc, mdFile), `# ${item}\n\n`, 'utf8', function(err) {
@@ -59,20 +60,20 @@ function makeMarkdownFile(loc, item) {
   }
 }
 
-//read specified directory
+// read specified directory
 function parseDirectory(dir, targetDir, relPath, targetFile) {
   fs.readdir(dir, function(err, list) {
-    //for each item in directory, check if it's a directory
+    // for each item in directory, check if it's a directory
     (list || []).forEach(function(item) {
-      //determine if is directory or file
-      //skip node_modules and bower_components directories
-      let chk = fs.lstatSync(path.resolve(dir, item)),
-          disallowedDirs = ['node_modules', 'bower_components'],
-          isDir = chk.isDirectory() && disallowedDirs.indexOf(item.toLowerCase()) < 0,
-          //check if is file and is not a hidden file
-          isFile = chk.isFile(),
-          isHidden = item.indexOf('.') === 0,
-          markdown = `*   [${item}](${relPath}/${removeExtension(item)}.md)\n\n`;
+      // determine if is directory or file
+      // skip node_modules and bower_components directories
+      const chk = fs.lstatSync(path.resolve(dir, item)),
+            disallowedDirs = ['dist', 'node_modules', 'bower_components', 'tmp'],
+            isDir = chk.isDirectory() && disallowedDirs.indexOf(item.toLowerCase()) < 0,
+            // check if is file and is not a hidden file
+            isFile = chk.isFile(),
+            isHidden = item.indexOf('.') === 0,
+            markdown = `*   [${item}](${relPath}/${removeExtension(item)}.md)\n\n`;
 
       if(!isHidden) {
         switch(true) {
@@ -91,15 +92,15 @@ function parseDirectory(dir, targetDir, relPath, targetFile) {
 
 }
 
-//Functions
+// Support Functions
 function checkFileExistence(dir, fileName) {
-  //assume the file exists until proven wrong
-  var result = true;
+  // assume the file exists until proven wrong
+  let result = true;
 
   try {
     fs.statSync(path.resolve (dir, fileName));
   } catch(err) {
-    //if fs.statSync errors, the file doesn't exist
+    // if fs.statSync errors, the file doesn't exist
     result = false;
   }
 
@@ -107,7 +108,7 @@ function checkFileExistence(dir, fileName) {
 }
 
 function removeExtension(name) {
-  let eman = reverse(name);
+  const eman = reverse(name);
 
   return reverse(eman.substring(eman.indexOf('.') + 1));
 }
