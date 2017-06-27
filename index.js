@@ -2,12 +2,12 @@ const colors = require('colors'),
       fs = require('graceful-fs'),
       path = require ('path');
 
-const log_error = require('console').error;
+const { log, error } = require('console');
 
 const args = require('minimist')(process.argv.slice(2));
 
 if(args.src && args.target) {
-  const item = args.src.replace(`${path.dirname(args.src)}/`, '');
+  const item = args.src.replace(`${path.dirname(args.src)}`, '');
   handleDirectory(args.src, args.target, '', item);
   process.on('exit', function() {
     const homeExists = checkFileExistence(args.target, 'Home.md');
@@ -26,26 +26,26 @@ if(args.src && args.target) {
   });
 
 } else {
-  error('Missing one or both of required arguments: --src and --target');
+  exception('Missing one or both of required arguments: --src and --target');
 }
 
-function error(err) {
-  log_error(colors.red(`\n${err.toString()}\n`));
+function exception(err) {
+  error(colors.red(`\n${err.toString()}\n`));
 }
 
 function handleDirectory(dir, targetDir, relPath, item) {
-  const tFile = path.resolve(targetDir, `${item}.md`);
+  const tFile = path.join(targetDir, `${item}.md`);
 
   makeDirectory(targetDir, item);
   makeMarkdownFile(targetDir, item);
   writeMarkdown(tFile, `# ${item}\n\n`);
-  parseDirectory(dir, path.resolve(targetDir, item), path.join(relPath, item), tFile);
+  parseDirectory(dir, path.join(targetDir, item), path.join(relPath, item), tFile);
 }
 
 function makeDirectory(loc, item) {
   if(!checkFileExistence(loc, item)) {
-    fs.mkdir(path.resolve(loc, item), function(err) {
-      if(err) error(err);
+    fs.mkdirSync(path.join(loc, item), function(err) {
+      if(err) exception(err);
     });
   }
 }
@@ -55,7 +55,7 @@ function makeMarkdownFile(loc, item) {
 
   if(!checkFileExistence(loc, mdFile)) {
     fs.writeFile(path.resolve(loc, mdFile), `# ${item}\n\n`, 'utf8', function(err) {
-      if(err) error(err);
+      if(err) exception(err);
     });
   }
 }
@@ -73,7 +73,7 @@ function parseDirectory(dir, targetDir, relPath, targetFile) {
             // check if is file and is not a hidden file
             isFile = chk.isFile(),
             isHidden = item.indexOf('.') === 0,
-            markdown = `*   [${item}](${relPath}/${removeExtension(item)}.md)\n\n`;
+            markdown = `*   [${item}](${path.join(relPath, removeExtension(item))}.md)\n\n`;
 
       if(!isHidden) {
         switch(true) {
@@ -119,6 +119,6 @@ function reverse(str) {
 
 function writeMarkdown(target, markdown) {
   fs.appendFile(target, markdown, function(err) {
-    if(err) error(err);
+    if(err) exception(err);
   });
 }
