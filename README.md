@@ -1,5 +1,6 @@
 # Markdown Wiki Initializer README
 --------------------------------
+
 This Node.js app scans the contents of a directory and generates a series of Markdown (.md) files that act as a wiki for the directory. It will recursively read all of the directories, subdirectories and files inside of the indicated parent directory, with no limitations on directory depth or size. It takes three arguments:
 
 1.  `--src` is the source directory that you want to create the wiki for
@@ -13,7 +14,7 @@ The resulting file structure for our `example-project`:
 ```
 wiki_directory
 |--Home.md
-|--example_project
+`--example_project
    |--file_1.md
    |--file_2.md
    |--subdirectory_1.md
@@ -52,7 +53,7 @@ to our existing `example-project`, we could safely rerun the wiki initializer to
 ```
 wiki_directory
 |--Home.md
-|--example_project
+`--example_project
    |--file_1.md
    |--file_2.md
    |--subdirectory_1.md
@@ -68,3 +69,11 @@ wiki_directory
       |--file_7.md
       `--file_8.md
 ```
+
+## Installation
+
+Run `npm install` to install all dependencies
+
+## Configuration
+
+You can update the `disallowed_directories` property in the `config/config.json` file to force the app to skip any directories that you do not want to generate files for.

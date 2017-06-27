@@ -6,6 +6,8 @@ const { log, error } = require('console');
 
 const args = require('minimist')(process.argv.slice(2));
 
+const config = fs.readFileSync(path.join(process.cwd(), 'config', 'config.json'), { encoding: 'utf8' });
+
 if(args.src && args.target) {
   const item = args.src.replace(`${path.dirname(args.src)}`, '');
   handleDirectory(args.src, args.target, '', item);
@@ -68,7 +70,7 @@ function parseDirectory(dir, targetDir, relPath, targetFile) {
       // determine if is directory or file
       // skip node_modules and bower_components directories
       const chk = fs.lstatSync(path.resolve(dir, item)),
-            disallowedDirs = ['dist', 'node_modules', 'bower_components', 'tmp'],
+            disallowedDirs = config.disallowed_directories ? config.disallowed_directories : [],
             isDir = chk.isDirectory() && disallowedDirs.indexOf(item.toLowerCase()) < 0,
             // check if is file and is not a hidden file
             isFile = chk.isFile(),
