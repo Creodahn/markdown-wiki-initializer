@@ -16,14 +16,12 @@ if(args.src && args.target) {
 
     switch(true) {
       case homeExists && args.rh:
-        fs.unlinkSync(path.resolve(args.target, 'Home.md'));
-        fs.renameSync(path.resolve(args.target, `${item}.md`), path.resolve(args.target, 'Home.md'));
+        fs.unlinkSync(path.join(args.target, 'Home.md'));
+        fs.renameSync(path.join(args.target, `${item}.md`), path.resolve(args.target, 'Home.md'));
         break;
       case !homeExists:
-        fs.renameSync(path.resolve(args.target, `${item}.md`), path.resolve(args.target, 'Home.md'));
+        fs.renameSync(path.join(args.target, `${item}.md`), path.resolve(args.target, 'Home.md'));
         break;
-      default:
-        fs.unlinkSync(path.resolve(args.target, `${item}.md`));
     }
   });
 
@@ -100,7 +98,7 @@ function checkFileExistence(dir, fileName) {
   let result = true;
 
   try {
-    fs.statSync(path.resolve (dir, fileName));
+    fs.statSync(path.join(dir, fileName));
   } catch(err) {
     // if fs.statSync errors, the file doesn't exist
     result = false;
