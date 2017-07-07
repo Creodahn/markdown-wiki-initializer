@@ -66,9 +66,12 @@ function parseDirectory(dir, targetDir, relPath, targetFile) {
     // for each item in directory, check if it's a directory
     (list || []).forEach(function(item) {
       // determine if is directory or file
-      // skip node_modules and bower_components directories
-      const chk = fs.lstatSync(path.resolve(dir, item)),
-            disallowedDirs = config.disallowed_directories ? config.disallowed_directories : [],
+      // always skip node_modules and bower_components directories
+      const chk = fs.statSync(path.resolve(dir, item)),
+            disallowedDirs = config.disallowed_directories ? config.disallowed_directories : [
+              'bower_components',
+              'node_modules'
+            ],
             isDir = chk.isDirectory() && disallowedDirs.indexOf(item.toLowerCase()) < 0,
             // check if is file and is not a hidden file
             isFile = chk.isFile(),
