@@ -1,6 +1,8 @@
 # Markdown Wiki Initializer README
 --------------------------------
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/Creodahn/markdown-wiki-initializer.svg)](https://greenkeeper.io/)
+
 This Node.js app scans the contents of a directory and generates a series of Markdown (.md) files that act as a wiki for the directory. It will recursively read all of the directories, subdirectories and files inside of the indicated parent directory, with no limitations on directory depth or size. It takes three arguments:
 
 1.  `--src` is the source directory that you want to create the wiki for
