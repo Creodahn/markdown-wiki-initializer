@@ -111,13 +111,7 @@ function checkFileExistence(dir, fileName) {
 }
 
 function removeExtension(name) {
-  const eman = reverse(name);
-
-  return reverse(eman.substring(eman.indexOf('.') + 1));
-}
-
-function reverse(str) {
-  return str.split('').reverse().join('');
+  return name.substring(0, name.lastIndexOf('.'));
 }
 
 function writeMarkdown(target, markdown) {
